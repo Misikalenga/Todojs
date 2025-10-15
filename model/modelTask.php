@@ -2,16 +2,21 @@
 
 // connexion pdo
 
-require_once __DIR__ . '../config.php';
+require_once  '../config.php';
+
 
 //securisé le code 
 function secureCode2($input){
         return htmlspecialchars(trim(strip_tags($input)));
 }
 
+
+//---------------------crud---------------------//
+
+
 //Creation de db pour ajax qui ne passe pas par index
 try{ 
-    $db = new PDO(DSN, LOGIN, PWD,
+    $db = new PDO(DSN, DB_USER, DB_PASS,
     [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
@@ -20,6 +25,7 @@ try{
 }catch(Exception $e){
     die($e->getMessage());
 }
+
 
 //pour créer un tache
 function taskAdd(PDO $db, $title, $comment)
@@ -39,7 +45,7 @@ function taskRead(PDO $db)
 
     try{
         $demande = $db->query("select * from `task`");
-        $reponse = $demande->fetch();
+        $reponse = $demande->fetchAll();
         $demande->closeCursor();
         header('Content-Type: application/json');
         echo json_encode($reponse);
